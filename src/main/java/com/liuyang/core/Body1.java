@@ -3,7 +3,11 @@ package com.liuyang.core;
 import java.io.Serializable;
 
 import com.liuyang.model.megacorp.Employee;
-
+/**
+ * 对elasticsearch返回的请求进行封装
+ * @author liuyang
+ * @email y_liu@hiersun.com | 745089707@qq.com
+ */
 public class Body1 implements Serializable {
 
 	private static final long serialVersionUID = 4374358092763006333L;

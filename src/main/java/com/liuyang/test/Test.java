@@ -11,7 +11,11 @@ import org.springframework.web.client.RestTemplate;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.liuyang.core.Body1;
-
+/**
+ * 测试elasticsearch的HTTP请求
+ * @author liuyang
+ * @email y_liu@hiersun.com | 745089707@qq.com
+ */
 public class Test {
 
 	private static final Logger logger = LoggerFactory.getLogger(Test.class);

@@ -2,7 +2,11 @@ package com.liuyang.model.megacorp;
 
 import java.io.Serializable;
 import java.util.List;
-
+/**
+ * 员工
+ * @author liuyang
+ * @email y_liu@hiersun.com | 745089707@qq.com
+ */
 public class Employee implements Serializable {
 	private static final long serialVersionUID = 2185299528325285395L;
 	private String last_name;
