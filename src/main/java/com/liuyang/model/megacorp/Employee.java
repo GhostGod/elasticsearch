@@ -2,17 +2,32 @@ package com.liuyang.model.megacorp;
 
 import java.io.Serializable;
 import java.util.List;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+
 /**
  * 员工
  * @author liuyang
  * @email y_liu@hiersun.com | 745089707@qq.com
  */
+@Document(indexName = "enterprise", type = "emloyee")
 public class Employee implements Serializable {
 	private static final long serialVersionUID = 2185299528325285395L;
+	@Id
+	private String id;
 	private String last_name;
 	private List<String> interests;
 	private String first_name;
 	private int age;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getLast_name() {
 		return last_name;
