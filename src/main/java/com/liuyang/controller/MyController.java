@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.liuyang.model.megacorp.Employee;
-import com.liuyang.repository.EmployeeRepository;
+import com.liuyang.repository.es.EmployeeEsRepository;
+import com.liuyang.repository.jpa.EmployeeJpaRepository;
 
 /**
  * 我的控制器
@@ -31,8 +32,10 @@ public class MyController {
 	private ElasticsearchTemplate template;
 
 	@Autowired
-	private EmployeeRepository employeeRepository;
-	
+	private EmployeeJpaRepository employeeJpaRepository;
+	@Autowired
+	private EmployeeEsRepository employeeEsRepository;
+
 	/**
 	 * 你猜
 	 * @param userAgent
@@ -67,21 +70,42 @@ public class MyController {
 		List<String> list = new ArrayList<String>();
 		list.add("dota");
 		list.add("lol");
-		employee.setInterests(list);
+		//employee.setInterests(list);
 		//保存到es
-		Employee employee2 = employeeRepository.save(employee);
+		Employee employee2 = employeeJpaRepository.save(employee);
+		employeeEsRepository.save(employee);
 		logger.info(employee2.toString());
 		IndexQuery indexQuery = new IndexQueryBuilder().withId("1").withIndexName("enterprise").withObject(employee)
 				.withType("employee").build();
 		template.index(indexQuery);
 		//查询全部
-		Iterable<Employee> iterable = employeeRepository.findAll();
-		if(iterable != null){
+		Iterable<Employee> iterable = employeeJpaRepository.findAll();
+		if (iterable != null) {
 			Iterator<Employee> iterator = iterable.iterator();
-			if(iterator.hasNext()){
+			if (iterator.hasNext()) {
 				employee = iterator.next();
 			}
 		}
 		return employee;
+	}
+
+	@RequestMapping("enterprise/employee/{id}")
+	public Employee get(@PathVariable String id) {
+		Employee employee = employeeEsRepository.findOne(id);
+		return employee;
+	}
+
+	@RequestMapping("enterprise/employees")
+	public List<Employee> get() {
+		//查询全部
+		Iterable<Employee> iterable = employeeEsRepository.findAll();
+		List<Employee> list = new ArrayList<Employee>();
+		if (iterable != null) {
+			Iterator<Employee> iterator = iterable.iterator();
+			while (iterator.hasNext()) {
+				list.add(iterator.next());
+			}
+		}
+		return list;
 	}
 }

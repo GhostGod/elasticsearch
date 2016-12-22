@@ -1,8 +1,11 @@
 package com.liuyang.model.megacorp;
 
 import java.io.Serializable;
-import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -11,13 +14,17 @@ import org.springframework.data.elasticsearch.annotations.Document;
  * @author liuyang
  * @email y_liu@hiersun.com | 745089707@qq.com
  */
-@Document(indexName = "enterprise", type = "emloyee")
+@Document(indexName = "enterprise", type = "employee")
+@Entity
 public class Employee implements Serializable {
 	private static final long serialVersionUID = 2185299528325285395L;
 	@Id
+	@javax.persistence.Id
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid")
 	private String id;
 	private String last_name;
-	private List<String> interests;
+	//private List<String> interests;
 	private String first_name;
 	private int age;
 
@@ -37,13 +44,13 @@ public class Employee implements Serializable {
 		this.last_name = last_name;
 	}
 
-	public List<String> getInterests() {
+	/*public List<String> getInterests() {
 		return interests;
 	}
 
 	public void setInterests(List<String> interests) {
 		this.interests = interests;
-	}
+	}*/
 
 	public String getFirst_name() {
 		return first_name;
@@ -63,7 +70,6 @@ public class Employee implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Employee [last_name=" + last_name + ", interests=" + interests + ", first_name=" + first_name
-				+ ", age=" + age + "]";
+		return "Employee [last_name=" + last_name + ", first_name=" + first_name + ", age=" + age + "]";
 	}
 }
