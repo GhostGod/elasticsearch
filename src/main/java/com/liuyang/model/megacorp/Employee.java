@@ -1,13 +1,16 @@
 package com.liuyang.model.megacorp;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * 员工
@@ -16,9 +19,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
  */
 @Document(indexName = "enterprise", type = "employee")
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Employee implements Serializable {
 	private static final long serialVersionUID = 2185299528325285395L;
-	@Id
 	@javax.persistence.Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid")
@@ -27,6 +30,8 @@ public class Employee implements Serializable {
 	//private List<String> interests;
 	private String first_name;
 	private int age;
+	@CreatedDate
+	private Date createdDate;
 
 	public String getId() {
 		return id;
@@ -68,8 +73,18 @@ public class Employee implements Serializable {
 		this.age = age;
 	}
 
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
 	@Override
 	public String toString() {
-		return "Employee [last_name=" + last_name + ", first_name=" + first_name + ", age=" + age + "]";
+		return "Employee [id=" + id + ", last_name=" + last_name + ", first_name=" + first_name + ", age=" + age
+				+ ", createdDate=" + createdDate + "]";
 	}
+
 }
