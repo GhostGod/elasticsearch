@@ -1,6 +1,7 @@
 package com.liuyang.controller;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -54,24 +55,33 @@ public class MyController {
 
 	/**
 	 * 测试es
+	 * @return 
 	 * @return
 	 */
 	@RequestMapping("es")
-	public Object es() {
+	public Employee es() {
 		Employee employee = new Employee();
 		employee.setAge(20);
 		employee.setFirst_name("hehe");
 		employee.setLast_name("haha");
 		List<String> list = new ArrayList<String>();
-		list.add("data");
+		list.add("dota");
 		list.add("lol");
 		employee.setInterests(list);
-		
+		//保存到es
 		Employee employee2 = employeeRepository.save(employee);
 		logger.info(employee2.toString());
 		IndexQuery indexQuery = new IndexQueryBuilder().withId("1").withIndexName("enterprise").withObject(employee)
 				.withType("employee").build();
-
-		return template.index(indexQuery);
+		template.index(indexQuery);
+		//查询全部
+		Iterable<Employee> iterable = employeeRepository.findAll();
+		if(iterable != null){
+			Iterator<Employee> iterator = iterable.iterator();
+			if(iterator.hasNext()){
+				employee = iterator.next();
+			}
+		}
+		return employee;
 	}
 }
