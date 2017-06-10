@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.IndexQuery;
-import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,35 +70,43 @@ public class MyController {
 	@RequestMapping("es")
 	public Employee es() {
 		Employee employee = new Employee();
-		employee.setAge(20);
+		employee.setAge(10);
 		employee.setFirst_name("hehe");
-		employee.setLast_name("haha");
+		employee.setLast_name("g MVC try to derive a Pageable ");
 		List<String> list = new ArrayList<String>();
 		list.add("dota");
 		list.add("lol");
 		//employee.setInterests(list);
 		//保存到es
-		Employee employee2 = employeeJpaRepository.save(employee);
+		//Employee employee2 = employeeJpaRepository.save(employee);
 		employeeEsRepository.save(employee);
-		logger.info(employee2.toString());
-		IndexQuery indexQuery = new IndexQueryBuilder().withId("1").withIndexName("enterprise").withObject(employee)
-				.withType("employee").build();
-		template.index(indexQuery);
+		employeeEsRepository.index(employee);
+		//logger.info(employee2.toString());
+		//IndexQuery indexQuery = new IndexQueryBuilder().withId("1").withIndexName("enterprise").withObject(employee).withType("employee")
+		//		.build();
+		//template.index(indexQuery);
 		//查询全部
-		Iterable<Employee> iterable = employeeJpaRepository.findAll();
-		if (iterable != null) {
-			Iterator<Employee> iterator = iterable.iterator();
-			if (iterator.hasNext()) {
-				employee = iterator.next();
-			}
-		}
+		//Iterable<Employee> iterable = employeeJpaRepository.findAll();
+		//if (iterable != null) {
+		//	Iterator<Employee> iterator = iterable.iterator();
+		//	if (iterator.hasNext()) {
+		//		employee = iterator.next();
+		//	}
+		//}
 		return employee;
 	}
 
 	@RequestMapping("enterprise/employee/{id}")
-	public Employee get(@PathVariable String id) {
-		Employee employee = employeeEsRepository.findOne(id);
-		return employee;
+	public List<Employee> get(@PathVariable String id, int age) {
+		QueryBuilder query1 = QueryBuilders.multiMatchQuery(id, "last_name");
+		QueryBuilder query2 = QueryBuilders.termQuery("age", age);
+		BoolQueryBuilder a = new BoolQueryBuilder();
+		a.must(query1);//.must(query2);
+		Sort sort = new Sort(Direction.DESC, "age");
+
+		Pageable page = new PageRequest(0, 10, sort);
+		Page<Employee> employees = employeeEsRepository.search(a, page);
+		return employees.getContent();
 	}
 
 	@RequestMapping("enterprise/employees")

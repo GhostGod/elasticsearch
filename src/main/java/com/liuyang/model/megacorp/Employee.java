@@ -52,7 +52,7 @@ public class Employee implements Serializable {
 	/*public List<String> getInterests() {
 		return interests;
 	}
-
+	
 	public void setInterests(List<String> interests) {
 		this.interests = interests;
 	}*/
@@ -83,8 +83,8 @@ public class Employee implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Employee [id=" + id + ", last_name=" + last_name + ", first_name=" + first_name + ", age=" + age
-				+ ", createdDate=" + createdDate + "]";
+		return "Employee [id=" + id + ", last_name=" + last_name + ", first_name=" + first_name + ", age=" + age + ", createdDate="
+				+ createdDate + "]";
 	}
 
 }
