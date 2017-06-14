@@ -1,6 +1,7 @@
 package com.liuyang.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,20 +69,20 @@ public class MyController {
 	 * @return 
 	 * @return
 	 */
-	@RequestMapping("es")
-	public Employee es() {
-		Employee employee = new Employee();
-		employee.setAge(10);
-		employee.setFirst_name("hehe");
-		employee.setLast_name("g MVC try to derive a Pageable ");
-		List<String> list = new ArrayList<String>();
-		list.add("dota");
-		list.add("lol");
-		//employee.setInterests(list);
-		//保存到es
-		//Employee employee2 = employeeJpaRepository.save(employee);
-		employeeEsRepository.save(employee);
-		employeeEsRepository.index(employee);
+	@RequestMapping("add")
+	public void es() {
+		for (int i = 0; i < 10; i++) {
+			Employee employee = new Employee();
+			employee.setAge(10 + i);
+			employee.setFirst_name("my name is " + i);
+			employee.setLast_name("g MVC try to derive a Pageable ");
+			employee.setCreatedDate(new Date());
+			//employee.setInterests(list);
+			//保存到es
+			//Employee employee2 = employeeJpaRepository.save(employee);
+			employeeEsRepository.save(employee);
+		}
+		//employeeEsRepository.index(employee);
 		//logger.info(employee2.toString());
 		//IndexQuery indexQuery = new IndexQueryBuilder().withId("1").withIndexName("enterprise").withObject(employee).withType("employee")
 		//		.build();
@@ -93,17 +95,19 @@ public class MyController {
 		//		employee = iterator.next();
 		//	}
 		//}
-		return employee;
 	}
 
 	@RequestMapping("enterprise/employee/{id}")
-	public List<Employee> get(@PathVariable String id, int age) {
-		QueryBuilder query1 = QueryBuilders.multiMatchQuery(id, "last_name");
-		QueryBuilder query2 = QueryBuilders.termQuery("age", age);
+	public List<Employee> get(@PathVariable String id, String a1) {
 		BoolQueryBuilder a = new BoolQueryBuilder();
-		a.must(query1);//.must(query2);
+		QueryBuilder query1 = QueryBuilders.multiMatchQuery(id, "last_name");
+		a.must(query1);
+		if (StringUtils.hasText(a1)) {
+			QueryBuilder query2 = QueryBuilders.termQuery("first_name", a1);
+			a.must(query2);
+		}
 		Sort sort = new Sort(Direction.DESC, "age");
-
+		//sort.and(new Sort(Direction.DESC, "createdDate"));
 		Pageable page = new PageRequest(0, 10, sort);
 		Page<Employee> employees = employeeEsRepository.search(a, page);
 		return employees.getContent();
@@ -121,5 +125,11 @@ public class MyController {
 			}
 		}
 		return list;
+	}
+
+	@RequestMapping("d")
+	public boolean d() {
+		employeeEsRepository.deleteAll();
+		return true;
 	}
 }

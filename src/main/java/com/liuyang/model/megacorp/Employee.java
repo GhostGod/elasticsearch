@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
@@ -18,6 +19,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  * @email y_liu@hiersun.com | 745089707@qq.com
  */
 @Document(indexName = "enterprise", type = "employee")
+@Mapping(mappingPath = "a.json")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class Employee implements Serializable {
