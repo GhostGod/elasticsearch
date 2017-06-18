@@ -3,15 +3,9 @@ package com.liuyang.model.megacorp;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * 员工
@@ -20,13 +14,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  */
 @Document(indexName = "enterprise", type = "employee")
 @Mapping(mappingPath = "a.json")
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 public class Employee implements Serializable {
 	private static final long serialVersionUID = 2185299528325285395L;
-	@javax.persistence.Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid")
 	private String id;
 	private String last_name;
 	//private List<String> interests;

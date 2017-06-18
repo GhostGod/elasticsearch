@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.liuyang.model.megacorp.Employee;
 import com.liuyang.repository.es.EmployeeEsRepository;
-import com.liuyang.repository.jpa.EmployeeJpaRepository;
 
 /**
  * 我的控制器
@@ -39,8 +38,6 @@ public class MyController {
 	@Autowired
 	private ElasticsearchTemplate template;
 
-	@Autowired
-	private EmployeeJpaRepository employeeJpaRepository;
 	@Autowired
 	private EmployeeEsRepository employeeEsRepository;
 
@@ -73,9 +70,10 @@ public class MyController {
 	public void es() {
 		for (int i = 0; i < 10; i++) {
 			Employee employee = new Employee();
+			employee.setId(i + "");
 			employee.setAge(10 + i);
 			employee.setFirst_name("my name is " + i);
-			employee.setLast_name("g MVC try to derive a Pageable ");
+			employee.setLast_name("中华人民共和国");
 			employee.setCreatedDate(new Date());
 			//employee.setInterests(list);
 			//保存到es
